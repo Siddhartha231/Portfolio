@@ -1,0 +1,38 @@
+name: Refresh portfolio
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: portfolio-main
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Install browser driver
+        run: npm install --prefix "$RUNNER_TEMP/portfolio-tools" --no-save playwright-core@1.56.1
+      - name: Refresh site and README
+        run: |
+          python3 -m http.server 8000 --bind 127.0.0.1 > "$RUNNER_TEMP/portfolio-server.log" 2>&1 &
+          trap 'kill "$!"' EXIT
+          curl --retry 10 --retry-connrefused --retry-delay 1 --fail --silent --output /dev/null http://127.0.0.1:8000/
+          NODE_PATH="$RUNNER_TEMP/portfolio-tools/node_modules" node scripts/refresh.cjs
+      - name: Save changes
+        run: |
+          git add -- index.html README.md docs/portfolio.png
+          if git diff --cached --quiet; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Refresh portfolio projects and README preview'
+          git push origin HEAD:main

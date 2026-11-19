@@ -283,11 +283,12 @@
         </figure>
       </article>
 
-      <!-- Any other public repos appear here automatically once the site is live -->
-      <div id="more-repos" hidden>
+      <!-- public-repos:start -->
+      <div id="more-repos" hidden="">
         <h3>More on GitHub</h3>
         <ul></ul>
       </div>
+      <!-- public-repos:end -->
     </div>
   </section>
 
@@ -564,18 +565,24 @@
 
   /* ============ Other public repos, straight from GitHub ============ */
   (function () {
-    var featured = ["daymark", "focus-log"];
+    var featured = Array.from(document.querySelectorAll(".project .more a"), function (link) {
+      return link.pathname.split("/").filter(Boolean).pop().toLowerCase();
+    });
     var box = document.getElementById("more-repos");
     if (!window.fetch) return;
     fetch("https://api.github.com/users/Siddhartha231/repos?per_page=100&sort=updated")
-      .then(function (r) { return r.ok ? r.json() : []; })
+      .then(function (r) {
+        if (!r.ok) throw new Error("GitHub repository list unavailable");
+        return r.json();
+      })
       .then(function (repos) {
         var extra = (Array.isArray(repos) ? repos : []).filter(function (r) {
           var n = r.name.toLowerCase();
-          return !r.fork && featured.indexOf(n) === -1 && !/\.github\.io$/.test(n) && n !== "siddhartha231";
+          return !r.fork && featured.indexOf(n) === -1 && !/\.github\.io$/.test(n) && n !== "siddhartha231" && n !== "portfolio";
         });
-        if (!extra.length) return;
         var ul = box.querySelector("ul");
+        ul.textContent = "";
+        box.hidden = extra.length === 0;
         extra.forEach(function (r) {
           var li = document.createElement("li");
           var a = document.createElement("a");
@@ -587,9 +594,9 @@
           li.appendChild(a); li.appendChild(desc); li.appendChild(lang);
           ul.appendChild(li);
         });
-        box.hidden = false;
+        box.dataset.refreshed = "true";
       })
-      .catch(function () { /* offline or rate limited: the featured projects still show */ });
+      .catch(function () { /* Keep the repository list saved by the last refresh. */ });
   })();
 })();
 </script>
