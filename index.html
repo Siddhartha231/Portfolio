@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Siddhartha Ramineni | Software projects</title>
+<meta name="description" content="Siddhartha Ramineni is a computer science junior at Virginia Tech. Projects: Daymark, a JavaFX task manager, and FocusLog, a command-line Pomodoro tracker.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Schibsted+Grotesk:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F1F3F5;
+    --surface: #FFFFFF;
+    --ink: #1B2130;
+    --muted: #586170;
+    --line: #D6DAE1;
+    --accent: #861F41;          /* Virginia Tech maroon */
+    --accent-ink: #FFFFFF;
+    --term-bg: #171B24;
+    --term-ink: #DDE2EA;
+    --term-dim: #8A93A3;
+    --sans: "Schibsted Grotesk", "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      color-scheme: dark;
+      --bg: #13161C;
+      --surface: #1B1F27;
+      --ink: #E8EAEE;
+      --muted: #9DA5B2;
+      --line: #2D333E;
+      --accent: #EE9DB4;
+      --accent-ink: #2A0A16;
+      --term-bg: #0C0E13;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 1.0625rem;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent); text-underline-offset: 0.18em; text-decoration-thickness: 1px; }
+  a:hover { text-decoration-thickness: 2px; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+  .wrap { max-width: 68rem; margin: 0 auto; padding: 0 1.5rem; }
+
+  /* ---------- top bar ---------- */
+  .top { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; padding-top: 1.5rem; }
+  .top .mark { font-weight: 700; color: var(--ink); text-decoration: none; }
+  .top nav { display: flex; gap: 1.5rem; }
+  .top nav a { color: var(--ink); text-decoration: none; }
+  .top nav a:hover { color: var(--accent); text-decoration: underline; }
+
+  /* ---------- intro ---------- */
+  .intro { padding-block: 5.5rem 5rem; }
+  .intro h1 {
+    margin: 0;
+    font-size: clamp(3rem, 11.5vw, 8.5rem);
+    font-weight: 800;
+    line-height: 0.92;
+    letter-spacing: -0.045em;
+  }
+  .intro h1 span { display: block; }
+  .intro h1 span + span { color: var(--accent); padding-left: 0.62em; }
+  .intro-body { display: grid; grid-template-columns: minmax(0, 34rem) auto; gap: 2rem 4rem; align-items: end; justify-content: space-between; margin-top: 3rem; }
+  .intro-body p { margin: 0; font-size: 1.3125rem; line-height: 1.45; }
+  .links { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.75rem; }
+  .btn {
+    display: inline-block; padding: 0.65rem 1.1rem; border: 1.5px solid var(--ink); border-radius: 999px;
+    color: var(--ink); text-decoration: none; font-weight: 500; font-size: 1rem;
+  }
+  .btn:hover { background: var(--ink); color: var(--bg); }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  .btn.primary:hover { filter: brightness(1.12); }
+
+  /* ---------- sections ---------- */
+  section { padding: 4rem 0; border-top: 1px solid var(--line); }
+  h2 { margin: 0 0 2.5rem; font-size: 1.125rem; font-weight: 500; color: var(--muted); }
+
+  .project { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 3rem; align-items: start; }
+  .project + .project { margin-top: 5.5rem; }
+  .project h3 { margin: 0; font-size: clamp(2.25rem, 5vw, 3.25rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1; }
+  .project .kind { margin: 0.6rem 0 0; font-size: 1.1875rem; font-weight: 500; }
+  .project .stack { margin: 0.35rem 0 1.5rem; color: var(--muted); font-size: 0.9375rem; }
+  .project p { margin: 0 0 1rem; max-width: 34rem; }
+  .project .more { margin-top: 1.5rem; }
+
+  .layers { margin: 1.5rem 0 0; padding: 0; max-width: 34rem; border-top: 1px solid var(--line); }
+  .layers div { display: grid; grid-template-columns: 6.5rem 1fr; gap: 0.75rem; padding: 0.55rem 0; border-bottom: 1px solid var(--line); font-size: 0.9375rem; }
+  .layers dt { font-family: var(--mono); font-size: 0.875rem; padding-top: 0.1em; }
+  .layers dd { margin: 0; color: var(--muted); }
+
+  .demo figcaption { margin-top: 0.75rem; color: var(--muted); font-size: 0.875rem; max-width: 38rem; }
+  figure { margin: 0; }
+
+  /* ---------- Daymark window (keeps the app's own light look) ---------- */
+  .window { border-radius: 9px; overflow: hidden; border: 1px solid #B9BEC7; box-shadow: 0 18px 40px -22px rgba(15, 20, 35, 0.55); color: #222; font-family: "Segoe UI", Arial, sans-serif; font-size: 13px; line-height: 1.35; }
+  .window-bar { display: flex; align-items: center; gap: 0.5rem; padding: 0.45rem 0.75rem; background: #E3E5E9; border-bottom: 1px solid #C9CDD4; color: #444; font-size: 12px; }
+  .window-bar i { width: 10px; height: 10px; border-radius: 50%; background: #B4B9C2; display: inline-block; }
+  .window-bar span { margin-left: 0.4rem; }
+  .window-body { background: #f4f4f4; padding: 15px; }
+  .dm-title { font-size: 24px; font-weight: 700; margin: 0 0 10px; }
+  .dm-filters { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; margin-bottom: 10px; }
+  .dm-filters select, .dm-filters input { font: inherit; padding: 5px 6px; border: 1px solid #BDBDBD; border-radius: 3px; background: #fff; color: #222; }
+  .dm-filters input { width: 150px; flex: 1 1 110px; max-width: 200px; }
+  .dm-table-wrap { background: #fff; border: 1px solid #C8C8C8; height: 232px; overflow: auto; }
+  .dm-table { width: 100%; border-collapse: collapse; }
+  .dm-table th { position: sticky; top: 0; text-align: left; font-weight: 600; background: #EDEDED; border-bottom: 1px solid #C8C8C8; border-right: 1px solid #DADADA; padding: 5px 8px; white-space: nowrap; }
+  .dm-table td { padding: 6px 8px; border-bottom: 1px solid #EFEFEF; white-space: nowrap; }
+  .dm-table td:first-child { white-space: normal; min-width: 150px; }
+  .dm-table tbody tr { cursor: pointer; }
+  .dm-table tbody tr:hover { background: #F2F7FC; }
+  .dm-table tr.overdue td { color: #E00000; }
+  .dm-table tr[aria-selected="true"], .dm-table tr[aria-selected="true"]:hover { background: #0096C9; }
+  .dm-table tr[aria-selected="true"] td { color: #fff; }
+  .dm-table tbody tr:focus-visible { outline: 2px solid #1B2130; outline-offset: -2px; }
+  .dm-empty { display: grid; place-items: center; height: 190px; color: #777; }
+  .dm-buttons { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+  .dm-buttons button { font: inherit; padding: 6px 14px; border-radius: 4px; border: 1px solid #BDBDBD; background: #E9E9E9; color: #222; cursor: pointer; }
+  .dm-buttons button:hover:not(:disabled) { background: #ddd; }
+  .dm-buttons button:disabled { opacity: 0.45; cursor: default; }
+  .dm-buttons .del { background: #f44336; border-color: #f44336; color: #fff; }
+  .dm-buttons .del:hover:not(:disabled) { background: #D8382C; }
+  .dm-buttons .reset { margin-left: auto; background: transparent; border-color: transparent; color: #1565C0; text-decoration: underline; padding-inline: 4px; }
+  .dm-buttons .reset:hover:not(:disabled) { background: transparent; color: #0D47A1; }
+  .window :focus-visible { outline-color: #1B2130; }
+
+  /* ---------- FocusLog terminal ---------- */
+  .term { background: var(--term-bg); color: var(--term-ink); border-radius: 9px; overflow: hidden; border: 1px solid #2B313D; box-shadow: 0 18px 40px -22px rgba(15, 20, 35, 0.55); }
+  .term pre { margin: 0; padding: 1rem 1.1rem; height: 21rem; overflow: auto; font-family: var(--mono); font-size: 0.8125rem; line-height: 1.55; tab-size: 8; white-space: pre; }
+  .term .cmd { color: #fff; font-weight: 600; }
+  .term .dim { color: var(--term-dim); }
+  .term-keys { display: flex; flex-wrap: wrap; gap: 0.5rem; padding: 0.75rem 1.1rem 0.9rem; border-top: 1px solid #2B313D; }
+  .term-keys button { font-family: var(--mono); font-size: 0.8125rem; padding: 0.4rem 0.7rem; border-radius: 5px; border: 1px solid #3A4250; background: #222834; color: var(--term-ink); cursor: pointer; }
+  .term-keys button:hover:not(:disabled) { background: #2D3543; }
+  .term-keys button:disabled { opacity: 0.4; cursor: default; }
+  .term-keys .stop { border-color: #C96A6A; color: #FFB4B4; }
+  .term :focus-visible { outline-color: #fff; }
+
+  /* ---------- other repos (filled in from GitHub) ---------- */
+  #more-repos { margin-top: 5.5rem; }
+  #more-repos h3 { margin: 0 0 1rem; font-size: 1.375rem; font-weight: 700; }
+  #more-repos ul { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+  #more-repos li { display: grid; grid-template-columns: minmax(0, 16rem) 1fr auto; gap: 1rem; padding: 0.85rem 0; border-bottom: 1px solid var(--line); }
+  #more-repos li span { color: var(--muted); }
+
+  /* ---------- about ---------- */
+  .about { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 3rem; }
+  .about .lead { margin: 0; font-size: 1.5rem; line-height: 1.35; font-weight: 500; letter-spacing: -0.01em; }
+  .facts { margin: 0; }
+  .facts div { display: grid; grid-template-columns: 9rem 1fr; gap: 1rem; padding: 0.9rem 0; border-bottom: 1px solid var(--line); }
+  .facts div:first-child { padding-top: 0; }
+  .facts dt { color: var(--muted); }
+  .facts dd { margin: 0; }
+  .facts dd small { display: block; color: var(--muted); font-size: 0.9375rem; }
+
+  /* ---------- contact ---------- */
+  .contact p { margin: 0 0 1.75rem; font-size: clamp(1.75rem, 4.5vw, 3rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1.08; max-width: 24ch; text-wrap: balance; }
+  footer { padding: 2rem 0 3rem; color: var(--muted); font-size: 0.875rem; }
+
+  @media (max-width: 56rem) {
+    .project, .about { grid-template-columns: minmax(0, 1fr); gap: 2rem; }
+    .intro { padding-block: 3.5rem; }
+    .intro-body { grid-template-columns: 1fr; justify-content: start; margin-top: 2rem; }
+    section { padding: 3rem 0; }
+    .project + .project, #more-repos { margin-top: 4rem; }
+    #more-repos li { grid-template-columns: 1fr; gap: 0.15rem; }
+  }
+  @media (max-width: 30rem) {
+    .top nav { gap: 1rem; }
+    .intro-body p { font-size: 1.1875rem; }
+    .facts div { grid-template-columns: 1fr; gap: 0.1rem; }
+    .intro h1 span + span { padding-left: 0; }
+  }
+</style>
+</head>
+<body>
+
+<header class="wrap top">
+  <a class="mark" href="#top">Siddhartha Ramineni</a>
+  <nav aria-label="Sections">
+    <a href="#projects">Projects</a>
+    <a href="#about">About</a>
+    <a href="#contact">Contact</a>
+  </nav>
+</header>
+
+<main id="top">
+  <div class="wrap intro">
+    <h1><span>Siddhartha</span><span>Ramineni</span></h1>
+    <div class="intro-body">
+      <p>I’m a computer science junior at Virginia Tech. I build small, well-tested tools in Java and Python, and I’m looking for a software engineering internship for summer 2027.</p>
+      <ul class="links">
+        <li><a class="btn primary" href="#projects">See my projects</a></li>
+        <li><a class="btn" href="https://github.com/Siddhartha231">GitHub</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <section id="projects">
+    <div class="wrap">
+      <h2>Projects</h2>
+
+      <!-- ============ Daymark ============ -->
+      <article class="project">
+        <div>
+          <h3>Daymark</h3>
+          <p class="kind">Desktop task manager</p>
+          <p class="stack">Java 21, JavaFX, SQLite, JDBC, Maven, JUnit</p>
+          <p>Daymark started as a console program. I rebuilt it as a real desktop app to practice a layered architecture: add, edit and delete tasks, filter by priority, search by text, and see anything overdue in red.</p>
+          <p>The interface only ever talks to a service layer, and storage sits behind a repository interface, so the SQLite backend can be swapped without touching the rest of the app. JUnit tests cover the domain, service and database layers, including malformed dates in stored rows.</p>
+          <dl class="layers">
+            <div><dt>ui</dt><dd>Main window and the add/edit dialog</dd></div>
+            <div><dt>service</dt><dd>Validation rules and done/undone logic</dd></div>
+            <div><dt>persistence</dt><dd>SQLite connection and the SQL itself</dd></div>
+            <div><dt>domain</dt><dd>Immutable Task and Priority, no dependencies</dd></div>
+          </dl>
+          <p class="more"><a href="https://github.com/Siddhartha231/Daymark">View the Daymark code on GitHub</a></p>
+        </div>
+
+        <figure class="demo">
+          <div class="window" id="daymark">
+            <div class="window-bar" aria-hidden="true"><i></i><i></i><i></i><span>Daymark</span></div>
+            <div class="window-body">
+              <p class="dm-title">Daymark</p>
+              <div class="dm-filters">
+                <label for="dm-view">View:</label>
+                <select id="dm-view"><option>Today</option><option selected>All Tasks</option><option>Completed</option></select>
+                <label for="dm-pri">Priority:</label>
+                <select id="dm-pri"><option>All</option><option>Low</option><option>Medium</option><option>High</option></select>
+                <input id="dm-search" type="search" placeholder="Search..." aria-label="Search tasks">
+              </div>
+              <div class="dm-table-wrap">
+                <table class="dm-table">
+                  <thead><tr><th>Title</th><th>Due Date</th><th>Priority</th><th>Done</th></tr></thead>
+                  <tbody id="dm-rows"></tbody>
+                </table>
+                <div class="dm-empty" id="dm-empty" hidden>No tasks</div>
+              </div>
+              <div class="dm-buttons">
+                <button type="button" id="dm-done" disabled>Mark Done</button>
+                <button type="button" id="dm-del" class="del" disabled>Delete</button>
+                <button type="button" id="dm-reset" class="reset">Reset tasks</button>
+              </div>
+            </div>
+          </div>
+          <figcaption>Try it: this is the main window rebuilt for the browser with sample tasks. Select a row, then mark it done. The real app is JavaFX and saves to a local SQLite file.</figcaption>
+        </figure>
+      </article>
+
+      <!-- ============ FocusLog ============ -->
+      <article class="project">
+        <div>
+          <h3>FocusLog</h3>
+          <p class="kind">Command-line Pomodoro tracker</p>
+          <p class="stack">Python, SQLite, argparse</p>
+          <p>FocusLog times study sessions from the terminal and logs each one to SQLite with its subject, duration and start time. By default it runs four 25-minute rounds with 5-minute breaks, and you can change all three.</p>
+          <p>Stop early with Ctrl+C and the time you finished is still saved. Daily and weekly summaries show where the hours went, by subject and by day.</p>
+          <p class="more"><a href="https://github.com/Siddhartha231/Focus-Log">View the FocusLog code on GitHub</a></p>
+        </div>
+
+        <figure class="demo">
+          <div class="term" id="focuslog">
+            <pre id="fl-out" tabindex="0" aria-label="FocusLog terminal output"></pre>
+            <div class="term-keys">
+              <button type="button" data-cmd="daily">summary daily</button>
+              <button type="button" data-cmd="weekly">summary weekly</button>
+              <button type="button" data-cmd="start">start "Math"</button>
+              <button type="button" class="stop" id="fl-stop" hidden>Ctrl+C</button>
+            </div>
+          </div>
+          <figcaption>Try it: run a command. The output follows the real program’s format, using sample sessions. Start a timer, stop it, and the next summary includes it.</figcaption>
+        </figure>
+      </article>
+
+      <!-- Any other public repos appear here automatically once the site is live -->
+      <div id="more-repos" hidden>
+        <h3>More on GitHub</h3>
+        <ul></ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="about">
+    <div class="wrap">
+      <h2>About</h2>
+      <div class="about">
+        <p class="lead">I care about how a program is put together as much as what it does: clear layers, validation in one place, and tests that catch the awkward cases.</p>
+        <dl class="facts">
+          <div>
+            <dt>Studying</dt>
+            <dd>B.S. in Computer Science, Virginia Tech
+              <small>Expected May 2028. Transferred from George Mason University, where I studied computer science from 2024 to 2026.</small></dd>
+          </div>
+          <div>
+            <dt>Coursework</dt>
+            <dd>Data Structures, Algorithms, Computer Systems, Discrete Mathematics, Formal Methods</dd>
+          </div>
+          <div>
+            <dt>Languages</dt>
+            <dd>Java, C, Python, JavaScript, SQL</dd>
+          </div>
+          <div>
+            <dt>Tools</dt>
+            <dd>Git, Maven, JUnit, GCC, Node.js, SQLite, IntelliJ IDEA, Linux</dd>
+          </div>
+          <div>
+            <dt>Outside class</dt>
+            <dd>Capture the Flag with Mason Competitive Cyber
+              <small>Mostly reverse engineering, web exploitation and SQL injection. Also took part in HackFax 2025.</small></dd>
+          </div>
+          <div>
+            <dt>Before this</dt>
+            <dd>Instructor at Kumon, teaching algebra through calculus one-on-one</dd>
+          </div>
+          <div>
+            <dt>Certification</dt>
+            <dd>CompTIA IT Fundamentals (ITF+)</dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="contact">
+    <div class="wrap">
+      <h2>Contact</h2>
+      <p>Hiring interns for summer 2027? I’d like to hear from you.</p>
+      <ul class="links">
+        <li><a class="btn primary" href="mailto:siddhartha.ramineni@gmail.com">Email me</a></li>
+        <li><a class="btn" href="https://www.linkedin.com/in/siddhartha-ramineni-628013351">LinkedIn</a></li>
+        <li><a class="btn" href="https://github.com/Siddhartha231">GitHub</a></li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<footer class="wrap">Siddhartha Ramineni, Ashburn, Virginia. Built with plain HTML, CSS and JavaScript.</footer>
+
+<script>
+(function () {
+  "use strict";
+  var DAY = 86400000;
+  function startOfDay(d) { return new Date(d.getFullYear(), d.getMonth(), d.getDate()); }
+  function addDays(d, n) { var x = new Date(d); x.setDate(x.getDate() + n); return x; }
+  function pad(n) { return (n < 10 ? "0" : "") + n; }
+  var today = startOfDay(new Date());
+
+  /* ================= Daymark ================= */
+  (function () {
+    var rowsEl = document.getElementById("dm-rows");
+    var emptyEl = document.getElementById("dm-empty");
+    var viewEl = document.getElementById("dm-view");
+    var priEl = document.getElementById("dm-pri");
+    var searchEl = document.getElementById("dm-search");
+    var doneBtn = document.getElementById("dm-done");
+    var delBtn = document.getElementById("dm-del");
+    var tasks, selected;
+
+    function seed() {
+      tasks = [
+        { id: 1, title: "Renew library book",              due: addDays(today, -3), priority: "Low",    done: false },
+        { id: 2, title: "Submit systems lab",              due: addDays(today, -1), priority: "High",   done: false },
+        { id: 3, title: "Review graph algorithms",         due: today,              priority: "Medium", done: false },
+        { id: 4, title: "Email advisor about spring",      due: addDays(today, 2),  priority: "Low",    done: false },
+        { id: 5, title: "Write tests for the repository",  due: addDays(today, -2), priority: "High",   done: true  },
+        { id: 6, title: "Practice problems for discrete",  due: addDays(today, 5),  priority: "Medium", done: false },
+        { id: 7, title: "Buy printer paper",               due: null,               priority: "Low",    done: false }
+      ];
+      selected = null;
+    }
+    function fmt(d) { return d ? pad(d.getMonth() + 1) + "/" + pad(d.getDate()) + "/" + d.getFullYear() : ""; }
+    function isOverdue(t) { return !t.done && t.due && t.due < today; }
+
+    function visible() {
+      var view = viewEl.value, pri = priEl.value, q = searchEl.value.trim().toLowerCase();
+      var out = tasks.filter(function (t) {
+        if (view === "Today" && (t.done || !t.due || t.due > today)) return false;
+        if (view === "Completed" && !t.done) return false;
+        if (pri !== "All" && t.priority !== pri) return false;
+        if (q && t.title.toLowerCase().indexOf(q) === -1) return false;
+        return true;
+      });
+      // tasks with a due date first, soonest at the top (same as the app)
+      out.sort(function (a, b) {
+        if (!a.due && !b.due) return 0;
+        if (!a.due) return 1;
+        if (!b.due) return -1;
+        return a.due - b.due;
+      });
+      return out;
+    }
+
+    function render(keepFocus) {
+      var list = visible();
+      if (!list.some(function (t) { return t.id === selected; })) selected = null;
+      rowsEl.textContent = "";
+      list.forEach(function (t) {
+        var tr = document.createElement("tr");
+        tr.tabIndex = 0;
+        tr.setAttribute("aria-selected", t.id === selected ? "true" : "false");
+        if (isOverdue(t)) tr.className = "overdue";
+        [t.title, fmt(t.due), t.priority, t.done ? "\u2713" : ""].forEach(function (text) {
+          var td = document.createElement("td");
+          td.textContent = text;
+          tr.appendChild(td);
+        });
+        function pick() { selected = t.id; render(true); }
+        tr.addEventListener("click", pick);
+        tr.addEventListener("keydown", function (e) {
+          if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pick(); }
+        });
+        rowsEl.appendChild(tr);
+        if (keepFocus && t.id === selected) tr.focus({ preventScroll: true });
+      });
+      emptyEl.hidden = list.length > 0;
+      var sel = tasks.filter(function (t) { return t.id === selected; })[0];
+      doneBtn.disabled = delBtn.disabled = !sel;
+      doneBtn.textContent = sel && sel.done ? "Mark Undone" : "Mark Done";
+    }
+
+    viewEl.addEventListener("change", function () { render(); });
+    priEl.addEventListener("change", function () { render(); });
+    searchEl.addEventListener("input", function () { render(); });
+    doneBtn.addEventListener("click", function () {
+      tasks.forEach(function (t) { if (t.id === selected) t.done = !t.done; });
+      render();
+    });
+    delBtn.addEventListener("click", function () {
+      tasks = tasks.filter(function (t) { return t.id !== selected; });
+      selected = null;
+      render();
+    });
+    document.getElementById("dm-reset").addEventListener("click", function () {
+      seed(); viewEl.value = "All Tasks"; priEl.value = "All"; searchEl.value = ""; render();
+    });
+
+    seed();
+    render();
+  })();
+
+  /* ================= FocusLog ================= */
+  (function () {
+    var out = document.getElementById("fl-out");
+    var stopBtn = document.getElementById("fl-stop");
+    var cmdBtns = Array.prototype.slice.call(document.querySelectorAll("#focuslog [data-cmd]"));
+    var WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    var monday = addDays(today, -((today.getDay() + 6) % 7));
+    var timer = null;
+
+    // sample sessions for this week, none later than today
+    var sessions = [
+      { subject: "Math",    day: 0, seconds: 1500 }, { subject: "Math",    day: 0, seconds: 1500 },
+      { subject: "OS",      day: 1, seconds: 3000 }, { subject: "Physics", day: 1, seconds: 1500 },
+      { subject: "Math",    day: 2, seconds: 1500 }, { subject: "OS",      day: 3, seconds: 3000 },
+      { subject: "Physics", day: 4, seconds: 1500 }, { subject: "Math",    day: 5, seconds: 1500 }
+    ].map(function (s) { return { subject: s.subject, date: addDays(monday, s.day), seconds: s.seconds }; })
+     .filter(function (s) { return s.date < today; });
+    sessions.push({ subject: "OS", date: today, seconds: 1500 }, { subject: "Math", date: today, seconds: 900 });
+
+    function iso(d) { return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()); }
+    function formatTime(s) { return pad(Math.floor(s / 3600)) + ":" + pad(Math.floor((s % 3600) / 60)) + ":" + pad(s % 60); }
+
+    function line(text, cls) {
+      var span = document.createElement("span");
+      if (cls) span.className = cls;
+      span.textContent = text + "\n";
+      out.appendChild(span);
+      while (out.childNodes.length > 80) out.removeChild(out.firstChild);
+      out.scrollTop = out.scrollHeight;
+      return span;
+    }
+    function prompt(args) { line("$ python focuslog.py " + args, "cmd"); }
+
+    function summary(period) {
+      var first = period === "daily" ? today : monday;
+      var last = period === "daily" ? today : addDays(monday, 6);
+      var bySubject = {}, byDay = {};
+      sessions.forEach(function (s) {
+        if (s.date < first || s.date > last) return;
+        if (!bySubject[s.subject]) bySubject[s.subject] = [0, 0];
+        bySubject[s.subject][0] += 1;
+        bySubject[s.subject][1] += s.seconds;
+        byDay[iso(s.date)] = (byDay[iso(s.date)] || 0) + s.seconds;
+      });
+      prompt("summary " + period);
+      line(period === "daily" ? "Daily summary for " + iso(first)
+                              : "Weekly summary: " + iso(first) + " through " + iso(last));
+      var names = Object.keys(bySubject).sort();
+      if (!names.length) { line("No study sessions recorded for this period."); line(""); return; }
+      line("Subject\t\tSessions\tTime");
+      var count = 0, total = 0;
+      names.forEach(function (n) {
+        line(n + "\t\t" + bySubject[n][0] + "\t\t" + formatTime(bySubject[n][1]));
+        count += bySubject[n][0]; total += bySubject[n][1];
+      });
+      line("Total: " + count + " sessions, " + formatTime(total));
+      if (period === "weekly") {
+        line("");
+        line("Daily totals:");
+        for (var i = 0; i < 7; i++) {
+          var d = addDays(monday, i);
+          line(iso(d) + " (" + WEEKDAYS[d.getDay()] + "): " + formatTime(byDay[iso(d)] || 0));
+        }
+      }
+      line("");
+    }
+
+    function setRunning(on) {
+      cmdBtns.forEach(function (b) { b.disabled = on; });
+      stopBtn.hidden = !on;
+      if (on) stopBtn.focus();
+    }
+
+    function start() {
+      var total = 25 * 60, startedAt = Date.now(), elapsed = 0;
+      prompt('start "Math" --rounds 1');
+      var live = line("");
+      function show() { live.textContent = "Study 1/1: Math | " + formatTime(total - elapsed) + " left\n"; }
+      show();
+      setRunning(true);
+      timer = setInterval(function () {
+        elapsed = Math.min(total, Math.round((Date.now() - startedAt) / 1000));
+        show();
+        if (elapsed >= total) finish(false);
+      }, 1000);
+
+      function finish(interrupted) {
+        clearInterval(timer); timer = null;
+        stopBtn.onclick = null;
+        if (interrupted) line("^C", "dim");
+        if (elapsed > 0) {
+          sessions.push({ subject: "Math", date: today, seconds: elapsed });
+          line("Saved " + formatTime(elapsed) + " for Math.");
+        }
+        line(interrupted ? "Stopped early." : "All rounds done!");
+        line("");
+        setRunning(false);
+        cmdBtns[0].focus();
+      }
+      stopBtn.onclick = function () { finish(true); };
+    }
+
+    cmdBtns.forEach(function (b) {
+      b.addEventListener("click", function () {
+        var c = b.getAttribute("data-cmd");
+        if (c === "start") start(); else summary(c);
+      });
+    });
+
+    summary("weekly");
+    out.scrollTop = 0;
+  })();
+
+  /* ============ Other public repos, straight from GitHub ============ */
+  (function () {
+    var featured = ["daymark", "focus-log"];
+    var box = document.getElementById("more-repos");
+    if (!window.fetch) return;
+    fetch("https://api.github.com/users/Siddhartha231/repos?per_page=100&sort=updated")
+      .then(function (r) { return r.ok ? r.json() : []; })
+      .then(function (repos) {
+        var extra = (Array.isArray(repos) ? repos : []).filter(function (r) {
+          var n = r.name.toLowerCase();
+          return !r.fork && featured.indexOf(n) === -1 && !/\.github\.io$/.test(n) && n !== "siddhartha231";
+        });
+        if (!extra.length) return;
+        var ul = box.querySelector("ul");
+        extra.forEach(function (r) {
+          var li = document.createElement("li");
+          var a = document.createElement("a");
+          a.href = r.html_url; a.textContent = r.name;
+          var desc = document.createElement("span");
+          desc.textContent = r.description || "No description yet";
+          var lang = document.createElement("span");
+          lang.textContent = r.language || "";
+          li.appendChild(a); li.appendChild(desc); li.appendChild(lang);
+          ul.appendChild(li);
+        });
+        box.hidden = false;
+      })
+      .catch(function () { /* offline or rate limited: the featured projects still show */ });
+  })();
+})();
+</script>
+</body>
+</html>
