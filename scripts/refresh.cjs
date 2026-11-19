@@ -44,7 +44,7 @@ async function refresh() {
       return '      ' + copy.outerHTML;
     });
     const section = [
-      introduction, '', '![Desktop screenshot of the portfolio](docs/portfolio.png)',
+      introduction, '', '[![Open the live portfolio — desktop preview](docs/portfolio.png)][live-site]',
       '', '## Featured projects', '', ...projects
     ].join('\n');
     const html = await fs.readFile('index.html', 'utf8');
